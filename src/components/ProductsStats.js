@@ -1,8 +1,8 @@
 // @flow
 import React from 'react'
 import ProductList from './ProductList'
-import type { ProductType, Product24HrStatsType } from '../types'
-import { fetchProducts, fetchProduct24HrStats } from '../data'
+import type { Product24HrStatsType } from '../types'
+import { fetchData } from '../data'
 
 type Props = {}
 
@@ -11,28 +11,30 @@ type State = {
 }
 
 class ProductsStats extends React.Component<Props, State> {
+  mounted = false
+
   state = {
     stats: [],
   }
 
   componentDidMount(): void {
+    this.mounted = true
     this.fetchData()
   }
 
   fetchData = async (): Promise<void> => {
     try {
-      const products: Array<ProductType> = await fetchProducts()
-      const stats: Array<Product24HrStatsType> = []
-
-      for (const product of products) {
-        console.log(product)
-        const productStats = await fetchProduct24HrStats(product)
-        stats.push(productStats)
-        this.setState({ stats: [...stats] })
+      const stats = await fetchData()
+      if (this.mounted) {
+        this.setState({ stats })
       }
     } catch (error) {
-      console.error('Fetch data error', error)
+      console.error(error)
     }
+  }
+
+  componentWillUnmount(): void {
+    this.mounted = false
   }
 
   render() {
