@@ -29,7 +29,7 @@ class ProductsStats extends React.Component<Props, State> {
   fetchData = async (): Promise<void> => {
     this.setState({ loading: true })
     try {
-      const stats = await fetchData()
+      const stats = await fetchData(stats => this.setState({ stats }))
       if (this.mounted) {
         this.setState({ loading: false, stats })
       }
@@ -47,14 +47,21 @@ class ProductsStats extends React.Component<Props, State> {
     console.log('render', this.state)
     const { stats, loading, error } = this.state
 
-    if (loading) {
-      return <div>Loading...</div>
-    } else if (error) {
-      return <div>{error}</div>
-    }
-
-    return <ProductList stats={stats} />
+    return [
+      <ProductList key="productList" stats={stats} />,
+      <StatusBar key="statusBar" loading={loading} error={error} />,
+    ]
   }
+}
+
+function StatusBar({ loading, error }) {
+  if (loading) {
+    return <div>Loading...</div>
+  } else if (error) {
+    return <div>{error}</div>
+  }
+
+  return null
 }
 
 export default ProductsStats

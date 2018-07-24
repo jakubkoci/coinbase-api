@@ -58,6 +58,15 @@ describe('data', () => {
         done()
       }
     })
+
+    it('calls onUpdate function for every fetched product stats', async () => {
+      setUpMockResponses(mockData, ['ETH-BTC', 'ETH-USD'])
+
+      const onUpdate = jest.fn()
+      await data.fetchData(onUpdate)
+
+      expect(onUpdate).toHaveBeenCalledTimes(2)
+    })
   })
 })
 

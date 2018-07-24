@@ -2,13 +2,16 @@
 import type { ProductType, Product24HrStatsType } from './types'
 import { API_URL } from './config'
 
-export async function fetchData(): Promise<Array<Product24HrStatsType>> {
+type OnUpdateType = (stats: Array<Product24HrStatsType>) => void
+
+export async function fetchData(onUpdate: OnUpdateType = () => {}): Promise<Array<Product24HrStatsType>> {
   const products: Array<ProductType> = await fetchProducts()
   const stats: Array<Product24HrStatsType> = []
 
   for (const product of products) {
     const productStats = await fetchProduct24HrStats(product)
     stats.push(productStats)
+    onUpdate(stats)
   }
 
   return stats
