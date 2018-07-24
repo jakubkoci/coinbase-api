@@ -1,7 +1,6 @@
 // @flow
 import type { ProductType, Product24HrStatsType } from './types'
-
-const API_URL: string = 'https://api-public.sandbox.pro.coinbase.com'
+import { API_URL } from './config'
 
 export async function fetchData(): Promise<Array<Product24HrStatsType>> {
   const products: Array<ProductType> = await fetchProducts()

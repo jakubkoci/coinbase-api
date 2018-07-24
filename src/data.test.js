@@ -1,7 +1,6 @@
 import fetchMock from 'fetch-mock'
 import * as data from './data'
-
-const API_URL: string = 'https://api-public.sandbox.pro.coinbase.com'
+import { API_URL } from './config'
 
 // 24Hr stats data by product ID
 const mockData = {
