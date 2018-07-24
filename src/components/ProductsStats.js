@@ -6,15 +6,19 @@ import { fetchData } from '../data'
 
 type Props = {}
 
-type State = {
+type State = {|
   stats: Array<Product24HrStatsType>,
-}
+  loading: boolean,
+  error: ?string,
+|}
 
 class ProductsStats extends React.Component<Props, State> {
   mounted = false
 
   state = {
     stats: [],
+    loading: false,
+    error: null,
   }
 
   componentDidMount(): void {
@@ -23,13 +27,15 @@ class ProductsStats extends React.Component<Props, State> {
   }
 
   fetchData = async (): Promise<void> => {
+    this.setState({ loading: true })
     try {
       const stats = await fetchData()
       if (this.mounted) {
-        this.setState({ stats })
+        this.setState({ loading: false, stats })
       }
     } catch (error) {
       console.error(error)
+      this.setState({ loading: false, error: error.message })
     }
   }
 
@@ -39,7 +45,15 @@ class ProductsStats extends React.Component<Props, State> {
 
   render() {
     console.log('render', this.state)
-    return <ProductList stats={this.state.stats} />
+    const { stats, loading, error } = this.state
+
+    if (loading) {
+      return <div>Loading...</div>
+    } else if (error) {
+      return <div>{error}</div>
+    }
+
+    return <ProductList stats={stats} />
   }
 }
 
